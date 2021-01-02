@@ -7,7 +7,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func main() {
+func main1() {
 	for {
 
 		// Enter a password and generate a salted hash
