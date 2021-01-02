@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func main2() {
+func main() {
 	fmt.Println("Let's Login to your account shall we?")
 	fmt.Println("What is the username you used to login to the account? ")
 	var user string
@@ -20,5 +20,5 @@ func main2() {
 		log.Fatal(err1)
 	}
 
-	fmt.Printf("File contents: %s", username)
+	fmt.Printf("File contents: %s\n", username)
 }
