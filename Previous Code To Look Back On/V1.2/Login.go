@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func main() {
+func main3() {
 	fmt.Println("Let's Login to your account shall we?")
 	fmt.Println("What is the username you used to login to the account? ")
 	var user string
