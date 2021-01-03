@@ -1,4 +1,4 @@
-package main
+package CreateLogin
 
 import (
 	"database/sql"
