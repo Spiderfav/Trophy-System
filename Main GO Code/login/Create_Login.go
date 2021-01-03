@@ -90,9 +90,6 @@ func login() {
 		}
 		fmt.Println("Password :::>", dbpass)
 	}
-	//	if dbRow. != passHash {
-	//		fmt.Println("Wrong password.")
-	//	}
 
 }
 
