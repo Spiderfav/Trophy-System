@@ -77,15 +77,22 @@ func login() {
 	fmt.Scanln(&pass)
 	passBytes := []byte(pass)
 	passHash := hashAndSalt(passBytes)
+	fmt.Println(passHash)
 	dbRow, err := db.Query("SELECT password FROM db.user_detail WHERE username=?", user)
 	if err != nil {
 		panic(err.Error())
-		fmt.Println("User not found.")
 	}
 
-	if dbRow != passHash {
-		fmt.Println("Wrong password.")
+	for dbRow.Next() {
+		var dbpass string
+		if err := dbRow.Scan(&dbpass); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Password :::>", dbpass)
 	}
+	//	if dbRow. != passHash {
+	//		fmt.Println("Wrong password.")
+	//	}
 
 }
 
