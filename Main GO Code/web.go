@@ -1,16 +1,20 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"time"
+
+	_ "github.com/go-sql-driver/mysql"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type pageVariables struct {
 	Date string
 	Time string
-	User string
 }
 
 /*
@@ -31,7 +35,6 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	homePageVars := pageVariables{ //store the date,time and username in a struct
 		Date: now.Format("02-01-2006"),
 		Time: now.Format("15:04:05"),
-		User: "Spiderfav",
 	}
 
 	t, err := template.ParseFiles("homepage.html") //parse the html file homepage.html
@@ -46,11 +49,44 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
+	db := dbConn()
 	r.ParseForm()
-	username := r.Form.Get("fname")
-	password := r.Form.Get("lname")
+	username := r.Form.Get("username")
+	password := r.Form.Get("pass")
+
+	passBytes := []byte(password)
+	passHash := hashAndSalt(passBytes)
 
 	log.Print("NAME ", username) //log it
-	log.Print("PASS ", password) //log it
+	log.Print("PASS ", passHash) //log it
 
+	dbRow, err := db.Query("SELECT password FROM db.user_detail WHERE username=?", username)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	for dbRow.Next() {
+		var dbpass string
+		if err := dbRow.Scan(&dbpass); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Password :::>", dbpass)
+	}
+
+}
+
+func hashAndSalt(pwd []byte) string {
+	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
+	if err != nil {
+		log.Println(err)
+	}
+	return string(hash)
+}
+
+func dbConn() (db *sql.DB) {
+	db, err := sql.Open("mysql", "user:password@tcp(192.168.0.133:3306)/db")
+	if err != nil {
+		panic(err.Error())
+	}
+	return db
 }
