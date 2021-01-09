@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"time"
 
+	B "../A-Level-Trophy-System/model/Create_Login"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -51,7 +53,7 @@ func loginUser(w http.ResponseWriter, r *http.Request) {
 	password := r.Form.Get("pass")
 
 	passBytes := []byte(password)
-	passHash := HashAndSalt(passBytes)
+	passHash := B.HashAndSalt(passBytes)
 
 	log.Print("NAME ", username) //log it
 	log.Print("PASS ", passHash) //log it
