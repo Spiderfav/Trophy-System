@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	B "../A-Level-Trophy-System/model/Create_Login"
+	B "TrophySystem/model"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -36,8 +36,8 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 		Time: now.Format("15:04:05"),
 	}
 
-	t, err := template.ParseFiles("homepage.html") //parse the html file homepage.html
-	if err != nil {                                // if there is an error
+	t, err := template.ParseFiles("view/homepage.html") //parse the html file homepage.html
+	if err != nil {                                     // if there is an error
 		log.Print("template parsing error: ", err) // log it
 	}
 
