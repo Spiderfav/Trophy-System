@@ -20,7 +20,8 @@ func main() {
 		createAccount()
 
 	} else if inputupper == "LOGIN" {
-		login()
+
+		Login("Spiderfav")
 
 	} else {
 		fmt.Println("Not an answer")
@@ -68,18 +69,10 @@ func createAccount() {
 	insertDB.Exec(email, fName, lName, passHash, user)
 }
 
-func login() {
+// Used to login to database
+func Login(username string) {
 	db := dbConn()
-	fmt.Println("Username:")
-	var user string
-	fmt.Scanln(&user)
-	fmt.Println("Password:")
-	var pass string
-	fmt.Scanln(&pass)
-	passBytes := []byte(pass)
-	passHash := HashAndSalt(passBytes)
-	fmt.Println(passHash)
-	dbRow, err := db.Query("SELECT password FROM db.user_detail WHERE username=?", user)
+	dbRow, err := db.Query("SELECT password FROM db.user_detail WHERE username=?", username)
 	if err != nil {
 		panic(err.Error())
 	}

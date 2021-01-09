@@ -20,7 +20,7 @@ func main() {
 		createAccount()
 
 	} else if inputupper == "LOGIN" {
-		login()
+		Login("Spiderfav")
 
 	} else {
 		fmt.Println("Not an answer")
@@ -68,29 +68,22 @@ func createAccount() {
 	insertDB.Exec(email, fName, lName, passHash, user)
 }
 
-func login() {
+// Used in main.go
+func Login(username string) (dbpass string) {
 	db := dbConn()
-	fmt.Println("Username:")
-	var user string
-	fmt.Scanln(&user)
-	fmt.Println("Password:")
-	var pass string
-	fmt.Scanln(&pass)
-	passBytes := []byte(pass)
-	passHash := HashAndSalt(passBytes)
-	fmt.Println(passHash)
-	dbRow, err := db.Query("SELECT password FROM db.user_detail WHERE username=?", user)
+	dbRow, err := db.Query("SELECT password FROM db.user_detail WHERE username=?", username)
 	if err != nil {
 		panic(err.Error())
 	}
-
 	for dbRow.Next() {
-		var dbpass string
+		//var dbpass string
 		if err := dbRow.Scan(&dbpass); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("Password :::>", dbpass)
+		log.Print("Password DB :::>", dbpass)
+
 	}
+	return dbpass
 
 }
 
