@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+
+<title>Login</title>
+</head>
+<body>
+<script type='text/javascript'>
+  function userLogin() {
+    document.getElementById("login").submit();
+  }
+ </script>
+<form id="login" action="/login" method="post">
+    <p></p>
+    <label for="username">Username:</label><br>
+    <input type="text" id="username" name="username" value="Username"><br>
+    <label for="pass">Password:</label><br>
+    <input type="password" id="pass" name="pass" value="Password"><br><br>
+    <input type="button" onclick="userLogin()" value="Login">
+  </form> 
+</body>
+</html>

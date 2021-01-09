@@ -48,6 +48,19 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
+
+	homePageVars := 0
+
+	t, err := template.ParseFiles("view/login_create.html") //parse the html file homepage.html
+	if err != nil {                                         // if there is an error
+		log.Print("template parsing error: ", err) // log it
+	}
+
+	err = t.Execute(w, homePageVars) //execute the template and pass it the homePageVars struct to fill in the gaps
+	if err != nil {                  // if there is an error
+		log.Print("template executing error: ", err) //log it
+	}
+
 	r.ParseForm()
 	username := r.Form.Get("username")
 	password := r.Form.Get("pass")
