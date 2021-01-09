@@ -1,15 +1,12 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type pageVariables struct {
@@ -49,44 +46,14 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
-	db := dbConn()
 	r.ParseForm()
 	username := r.Form.Get("username")
 	password := r.Form.Get("pass")
 
 	passBytes := []byte(password)
-	passHash := hashAndSalt(passBytes)
+	passHash := HashAndSalt(passBytes)
 
 	log.Print("NAME ", username) //log it
 	log.Print("PASS ", passHash) //log it
 
-	dbRow, err := db.Query("SELECT password FROM db.user_detail WHERE username=?", username)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	for dbRow.Next() {
-		var dbpass string
-		if err := dbRow.Scan(&dbpass); err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println("Password :::>", dbpass)
-	}
-
-}
-
-func hashAndSalt(pwd []byte) string {
-	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
-	if err != nil {
-		log.Println(err)
-	}
-	return string(hash)
-}
-
-func dbConn() (db *sql.DB) {
-	db, err := sql.Open("mysql", "user:password@tcp(192.168.0.133:3306)/db")
-	if err != nil {
-		panic(err.Error())
-	}
-	return db
 }

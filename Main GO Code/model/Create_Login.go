@@ -28,7 +28,8 @@ func main() {
 	}
 }
 
-func hashAndSalt(pwd []byte) string {
+// Exporting hashing algorithm to web.go file
+func HashAndSalt(pwd []byte) string {
 	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
 	if err != nil {
 		log.Println(err)
@@ -49,7 +50,7 @@ func createAccount() {
 	var pass string
 	fmt.Scanln(&pass)
 	passBytes := []byte(pass)
-	passHash := hashAndSalt(passBytes)
+	passHash := HashAndSalt(passBytes)
 	fmt.Println("Email:")
 	var email string
 	fmt.Scanln(&email)
@@ -76,7 +77,7 @@ func login() {
 	var pass string
 	fmt.Scanln(&pass)
 	passBytes := []byte(pass)
-	passHash := hashAndSalt(passBytes)
+	passHash := HashAndSalt(passBytes)
 	fmt.Println(passHash)
 	dbRow, err := db.Query("SELECT password FROM db.user_detail WHERE username=?", user)
 	if err != nil {
