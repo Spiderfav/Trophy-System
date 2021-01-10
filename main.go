@@ -1,12 +1,11 @@
 package main
 
 import (
+	model "A-Level-Trophy-System/model"
 	"html/template"
 	"log"
 	"net/http"
 	"time"
-
-	model "A-Level-Trophy-System/model"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -23,7 +22,7 @@ func main() {
 	// http.HandleFunc() takes two inputs, the first being a pattern which is a string
 	// and the second is a handler (a function that needs a ResponseWriter and a pointer to a Request).
 	http.HandleFunc("/", homePage)
-	http.HandleFunc("/login", loginUser)
+	http.HandleFunc("/login", showLogin)
 	//http.HandleFunc("/account", homePage)  //Gonna be used later to implement the create account and login code already made
 	http.ListenAndServe(":8080", nil)
 }
@@ -47,8 +46,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func loginUser(w http.ResponseWriter, r *http.Request) {
-
+func showLogin(w http.ResponseWriter, r *http.Request) {
 	homePageVars := 0
 
 	t, err := template.ParseFiles("view/login_create.html") //parse the html file homepage.html
