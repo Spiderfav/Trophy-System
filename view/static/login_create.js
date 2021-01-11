@@ -1,6 +1,3 @@
-var emailArray=[];
-        var passwordArray=[];
-
         var loginBox = document.getElementById("login");
         var regBox = document.getElementById("register");
         var forgetBox = document.getElementById("forgot");
@@ -41,7 +38,7 @@ var emailArray=[];
         }
 
         $(document).ready(function(){
-            $("#register").click(function(){
+            $("#register").submit(function(){
                 var username = document.getElementById("us").value;
                 var email = document.getElementById("re").value;
                 var password = document.getElementById("rp").value;
@@ -51,11 +48,11 @@ var emailArray=[];
                     $.ajax({
                         url:'/createuser',
                         type:'post',
-                        data:{username:username,password:password},
+                        data:{username:username,password:password,email:email},
                         success:function(response){
                             var msg = "";
-                            if(response == 1){
-                                window.location = "home.php";
+                            if(response == true){
+                                window.location = "/homepage";
                             }else{
                                 msg = "Invalid username and password!";
                             }

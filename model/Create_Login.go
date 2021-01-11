@@ -23,33 +23,51 @@ func hashAndSalt(pwd []byte) string {
 func CreateAccount(u, p, e string) (ok bool, message string) {
 	db := dbConn()
 	// table value =? is the same as what im doing below
-	emailExist, err1 := db.Query("SELECT email FROM db.user_detail WHERE email=?", e)
-	if err1 == nil {
-		log.Println("Email already in db:", emailExist)
-		ok = false
-		message = "Email Already In DB"
-		return ok, message
-	} else {
-		userExist, err2 := db.Query("SELECT username FROM db.user_detail WHERE username=?", u)
-		if err2 == nil {
-			log.Println("Username already in db:", userExist)
+	emailExist, err := db.Query("SELECT email FROM db.user_detail WHERE email=?", e)
+	if err != nil {
+		panic(err.Error())
+	}
+	for emailExist.Next() {
+		var email string
+		if err := emailExist.Scan(&email); err != nil {
+			log.Fatal(err)
+		}
+		if email != "" {
+			log.Println("Email already in db:", email)
+			ok = false
+			message = "Email Already In DB"
+			return ok, message
+		}
+	}
+
+	userExist, err := db.Query("SELECT username FROM db.user_detail WHERE username=?", u)
+	if err != nil {
+		panic(err.Error())
+	}
+	for userExist.Next() {
+		var user string
+		if err := userExist.Scan(&user); err != nil {
+			log.Fatal(err)
+		}
+		if user != "" {
+			log.Println("Username already in db:", user)
 			ok = false
 			message = "Username Already In DB"
 			return ok, message
-		} else {
-			passBytes := []byte(p)
-			passHash := hashAndSalt(passBytes)
-			insertDB, err := db.Prepare("INSERT INTO user_detail(email, password, username) VALUES (?,?,?)")
-			if err != nil {
-				panic(err.Error())
-			}
-			insertDB.Exec(e, passHash, u)
-			ok = true
-			message = "User created"
-			return ok, message
-
 		}
 	}
+
+	passBytes := []byte(p)
+	passHash := hashAndSalt(passBytes)
+	insertDB, err := db.Prepare("INSERT INTO user_detail(email, password, username) VALUES (?,?,?)")
+	if err != nil {
+		panic(err.Error())
+	}
+	log.Println("Inserting: *", e, "*", passHash, "*", u, "*")
+	insertDB.Exec(e, passHash, u)
+	ok = true
+	message = "User created"
+	return ok, message
 
 }
 
