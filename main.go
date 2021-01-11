@@ -70,15 +70,8 @@ func showLogin(w http.ResponseWriter, r *http.Request) {
 	username := r.Form.Get("username")
 	password := r.Form.Get("pass")
 
-	passBytes := []byte(password)
-	passHash := model.HashAndSalt(passBytes)
-
-	log.Print("NAME ", username) //log it
-
-	dbpass := model.Login(username)
-
-	log.Print("PASS ", passHash)
-	log.Print("PASS DB ", dbpass)
+	match := model.Login(username, password)
+	log.Print(match)
 
 }
 

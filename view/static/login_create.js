@@ -100,7 +100,7 @@ var emailArray=[];
                 
                 console.log(response)
 
-                alert(email + "  Thanks for registration. \nTry to login Now");
+                alert(username + "  Thanks for registration. \nTry to login Now");
 
                 document.getElementById("re").value ="";
                 document.getElementById("rp").value="";
