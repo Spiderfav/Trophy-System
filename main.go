@@ -2,12 +2,11 @@ package main
 
 import (
 	model "A-Level-Trophy-System/model"
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
 	"time"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 type pageVariables struct {
@@ -57,11 +56,18 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 func login(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
-	username := r.Form.Get("username")
+	email := r.Form.Get("email")
 	password := r.Form.Get("password")
 
-	match := model.Login(username, password)
+	match := model.Login(email, password)
 	log.Print(match)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	mapD := map[string]bool{"status": match}
+	mapB, _ := json.Marshal(mapD)
+	//jsonData := []byte(`{"status":match}`)
+	w.Write(mapB)
 
 }
 
@@ -94,4 +100,6 @@ func loginOrcreate(w http.ResponseWriter, r *http.Request) {
 	if err != nil {       // if there is an error
 		log.Print("template executing error: ", err) //log it
 	}
+
+	log.Print("I am here! Login or create")
 }
