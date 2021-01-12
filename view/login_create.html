@@ -4,42 +4,45 @@
   <meta charset="UTF-8">
   <title>Login and Create Account
   </title>
-  <link rel="stylesheet" href="./static/login_create.css">
+  <link rel="stylesheet" type="text/css" href="./static/login_create.css">
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
 
 </head>
 <body>
-<div id="container">
+    <div id="container">
         <div id="tabs">
             <p id="lt" class="tabs" onclick="loginTabFun()">Log in</p>
             <p id="rt" class="tabs" onclick="regTabFun()">Register</p>
-
+      
             <div id="clear"></div>
         </div>
-
+      
         <div id="cont">
             <div id="login" class="comm">
                 <h3>Sign in</h3>
-
+      
                 <input id="se" type="email" placeholder="Email" required/>
                 <input id="sp" type="password" placeholder="Password" required/>
                 <input type="submit" onclick="login()" value="Submit"/>
-
+      
                 <p onclick="forTabFun()">Forget Password?</p>
             </div>
+
             <form id="register_form">
 
-            <div id="register" class="comm">
-                <h3>Register</h3>
-
-                <input id="us" type="text" placeholder="Username" required/>
-                <input id="re" type="email" placeholder="Email" required/>
-                <input id="rp" type="password" placeholder="Password" required/>
-                <input id="rrp" type="password" placeholder="Re write Password" required/>
-                <input id="register" type="submit"  value="Submit"/>
-
-            </div >
+                <div id="register" class="comm">
+                    <h3>Register</h3>
+    
+                    <input id="us" type="text" placeholder="Username" required/>
+                    <input id="re" type="email" placeholder="Email" required/>
+                    <input id="rp" type="password" placeholder="Password" required/>
+                    <input id="rrp" type="password" placeholder="Re write Password" required/>
+                    <input id="register_button" type="submit"  value="Submit"/>
+    
+                </div >
             </form>
+
             <div id="forgot" class="comm">
             <h3>Forgot Password</h3>
             <div>
@@ -48,8 +51,8 @@
             </div>
             </div>
         </div>
-    </div>
+      </div>
   <script  src="./static/login_create.js"></script>
-
+  
 </body>
 </html>

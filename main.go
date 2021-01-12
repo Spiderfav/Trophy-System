@@ -27,8 +27,9 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	http.HandleFunc("/", homePage)
-	http.HandleFunc("/login", showLogin)
+	http.HandleFunc("/login", loginOrcreate)
 	http.HandleFunc("/createuser", createUser)
+	http.HandleFunc("/userlogin", login)
 
 	//http.HandleFunc("/account", homePage)  //Gonna be used later to implement the create account and login code already made
 	http.ListenAndServe(":8080", nil)
@@ -53,22 +54,11 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func showLogin(w http.ResponseWriter, r *http.Request) {
-	homePageVars := 0
-
-	t, err := template.ParseFiles("view/login_create.html") //parse the html file homepage.html
-	if err != nil {                                         // if there is an error
-		log.Print("template parsing error: ", err) // log it
-	}
-
-	err = t.Execute(w, homePageVars) //execute the template and pass it the homePageVars struct to fill in the gaps
-	if err != nil {                  // if there is an error
-		log.Print("template executing error: ", err) //log it
-	}
+func login(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
 	username := r.Form.Get("username")
-	password := r.Form.Get("pass")
+	password := r.Form.Get("password")
 
 	match := model.Login(username, password)
 	log.Print(match)
@@ -79,7 +69,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
 	username := r.Form.Get("username")
-	password := r.Form.Get("pass")
+	password := r.Form.Get("password")
 	email := r.Form.Get("email")
 
 	ok, message := model.CreateAccount(username, password, email)
@@ -91,4 +81,17 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	jsonData := []byte(`{"status":"OK"}`)
 	w.Write(jsonData)
 
+}
+
+func loginOrcreate(w http.ResponseWriter, r *http.Request) {
+
+	t, err := template.ParseFiles("view/login_create.html") //parse the html file homepage.html
+	if err != nil {                                         // if there is an error
+		log.Print("template parsing error: ", err) // log it
+	}
+
+	err = t.Execute(w, 0) //execute the template and pass it the homePageVars struct to fill in the gaps
+	if err != nil {       // if there is an error
+		log.Print("template executing error: ", err) //log it
+	}
 }

@@ -21,3 +21,20 @@
   </form> 
 </body>
 </html>
+
+
+
+ $.ajax({
+                        url:'/createuser',
+                        type:'post',
+                        data:{username:username,password:password,email:email},
+                        success:function(response){
+                            var msg = "";
+                            if(response == true){
+                                window.location = "/homepage";
+                            }else{
+                                msg = "Invalid username and password!";
+                            }
+                            $("#message").html(msg);
+                        }
+                    });
