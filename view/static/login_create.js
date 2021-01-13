@@ -38,7 +38,7 @@ function forTabFun() {
 }
 
 $(document).ready(function () {
-    $("#register_form").submit(function () {
+    $("#register_button").click(function () {
 
         var username = document.getElementById("us").value;
         var email = document.getElementById("re").value;
@@ -46,95 +46,83 @@ $(document).ready(function () {
         var passwordRetype = document.getElementById("rrp").value;
 
         if (email == "") {
-            alert("Email required.");
+            $("#message").html("Email required.");
             return;
         }
         else if (password == "") {
-            alert("Password required.");
+            $("#message").html("Password required.");
             return;
         }
         else if (username == "") {
-            alert("Username required.");
+            $("#message").html("Username required.");
             return;
         }
         else if (passwordRetype == "") {
-            alert("Password required.");
+            $("#message").html("Password Retype required.");
             return;
         }
         else if (password != passwordRetype) {
-            alert("Passwords don't match, retype your Password.");
+            $("#message").html("Passwords don't match, retype your Password.");
             return;
         }
         else {
             $.ajax({
                 url: '/createuser',
                 type: 'post',
+                dataType: 'json',
                 data: { username: username, password: password, email: email },
                 success: function (response) {
-                    var msg = "";
-                    if (response == true) {
-                        window.location = "/homepage";  // window.location = "/homepage";
+                    console.log(response);
+                    var msg = response.message;
+                    if (response.status === "true") {
+                        window.location = "/";  // window.location = "/homepage";
                     } else {
-                        msg = "Invalid username and password!";
+
+                        document.getElementById("rp").value = "";
+                        document.getElementById("rrp").value = "";
+                        //msg = "Username or email already registered!";
                     }
                     $("#message").html(msg);
-                    console.log(response);
-
-                    alert(username + "  Thanks for registration. \nTry to login Now");
-
-                    document.getElementById("re").value = "";
-                    document.getElementById("rp").value = "";
-                    document.getElementById("rrp").value = "";
-                    document.getElementById("us").value = "";
-
-
                 }
             })
         }
     });
-    $("#login_form").submit(function () {
+    $("#login_button").click(function () {
         var email = document.getElementById("se").value;
         var password = document.getElementById("sp").value;
 
         if (email == "") {
-            alert("Email required.");
+            $("#message").html("Email required.");
             return;
         }
         else if (password == "") {
-            alert("Password required.");
+            $("#message").html("Password required.");
             return;
         }
         else {
-            var success
             $.ajax({
                 url: '/userlogin',
                 type: 'post',
                 data: { email: email, password: password },
                 dataType: 'json',
-                async: false,
+                //async: false,
                 success: function (response) {
-                    success = response;
+                    console.log(response);
+                    //var obj = jQuery.parseJSON(response);
+                    var msg = "";
+                    //alert(response);
+
+                    if (response.status === true) {
+                        window.location = "/";  // window.location = "/homepage";
+                    } else {
+                        document.getElementById("sp").value = "";
+                        msg = "Invalid username or password!";
+                    }
+                    $("#message").html(msg);
                 }
             });
-            var obj = jQuery.parseJSON(success)
-            var msg = "";
-            alert(obj.status === "true");
-
-            if (obj.status === true) {
-                window.location = "/homepage";  // window.location = "/homepage";
-            } else {
-                msg = "Invalid username and password!";
-            }
-            $("#message").html(msg);
-            console.log(success);
-
-            alert(email + ", Login successful!");
-
-            document.getElementById("se").value = "";
-            document.getElementById("sp").value = "";
-
         }
-    });
+});
 });
 
 

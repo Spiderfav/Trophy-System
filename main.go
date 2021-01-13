@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -84,8 +85,13 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	jsonData := []byte(`{"status":"OK"}`)
-	w.Write(jsonData)
+
+	s := strconv.FormatBool(ok)
+
+	mapD := map[string]string{"status": s,
+		"message": message}
+	mapB, _ := json.Marshal(mapD)
+	w.Write(mapB)
 
 }
 
