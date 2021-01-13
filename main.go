@@ -1,7 +1,7 @@
 package main
 
 import (
-	model "A-Level-Trophy-System/model"
+	model "Trophy-System/model"
 	"encoding/json"
 	"html/template"
 	"log"
