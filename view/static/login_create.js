@@ -118,7 +118,7 @@ $(document).ready(function () {
             });
             var obj = jQuery.parseJSON(success)
             var msg = "";
-            alert( obj.status === "true" );
+            alert(obj.status === "true");
 
             if (obj.status === true) {
                 window.location = "/homepage";  // window.location = "/homepage";
@@ -128,7 +128,7 @@ $(document).ready(function () {
             $("#message").html(msg);
             console.log(success);
 
-            alert(username + ", Login successful!");
+            alert(email + ", Login successful!");
 
             document.getElementById("se").value = "";
             document.getElementById("sp").value = "";
