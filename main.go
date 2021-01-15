@@ -73,7 +73,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	cookie, _ := r.Cookie("email")
-	fmt.Println(w, cookie)
+	fmt.Fprint(w, cookie)
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
@@ -85,6 +85,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 	match := model.Login(email, password)
 	log.Print(match)
 
+	expiration := time.Now().Add(365 * 24 * time.Hour)
+	cookie := http.Cookie{Name: "email", Value: email, Expires: expiration}
+	http.SetCookie(w, &cookie)
+
+	cookieValue, _ := r.Cookie("email")
+	fmt.Fprint(w, cookieValue)
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	mapD := map[string]bool{"status": match}
@@ -92,9 +99,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 	//jsonData := []byte(`{"status":match}`)
 	w.Write(mapB)
 
-	expiration := time.Now().Add(365 * 24 * time.Hour)
-	cookie := http.Cookie{Name: "email", Value: email, Expires: expiration}
-	http.SetCookie(w, &cookie)
 }
 
 func createUser(w http.ResponseWriter, r *http.Request) {
