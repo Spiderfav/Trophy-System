@@ -3,6 +3,7 @@ package main
 import (
 	model "Trophy-System/model"
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -13,6 +14,24 @@ import (
 type pageVariables struct {
 	Date string
 	Time string
+}
+
+type Cookie struct {
+	Name       string
+	Value      string
+	Path       string
+	Domain     string
+	Expires    time.Time
+	RawExpires string
+
+	// MaxAge=0 means no 'Max-Age' attribute specified.
+	// MaxAge<0 means delete cookie now, equivalently 'Max-Age: 0'
+	// MaxAge>0 means Max-Age attribute present and given in seconds
+	MaxAge   int
+	Secure   bool
+	HTTPOnly bool
+	Raw      string
+	Unparsed []string // Raw text of unparsed attribute-value pairs
 }
 
 /*
@@ -52,6 +71,9 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {                  // if there is an error
 		log.Print("template executing error: ", err) //log it
 	}
+
+	cookie, _ := r.Cookie("email")
+	fmt.Println(w, cookie)
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
@@ -70,6 +92,9 @@ func login(w http.ResponseWriter, r *http.Request) {
 	//jsonData := []byte(`{"status":match}`)
 	w.Write(mapB)
 
+	expiration := time.Now().Add(365 * 24 * time.Hour)
+	cookie := http.Cookie{Name: "email", Value: email, Expires: expiration}
+	http.SetCookie(w, &cookie)
 }
 
 func createUser(w http.ResponseWriter, r *http.Request) {
