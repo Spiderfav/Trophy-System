@@ -58,8 +58,10 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 
 	cookie, _ := r.Cookie("email")
 	fmt.Println(cookie.Value)
-	if cookie == nil {
-		cookie := http.Cookie{Name: "", Value: "", Expires: time.time}
+	if cookie.Value == "" {
+		expiration := time.Now().Add(365 * 24 * time.Hour)
+		cookie := http.Cookie{Name: "", Value: "", Expires: expiration}
+		http.SetCookie(w, &cookie)
 	}
 	now := time.Now()              // find the time right now
 	homePageVars := pageVariables{ //store the date,time and username in a struct
@@ -81,26 +83,33 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 
 func login(w http.ResponseWriter, r *http.Request) {
 
-	r.ParseForm()
-	email := r.Form.Get("email")
-	password := r.Form.Get("password")
+	cookie, _ := r.Cookie("email")
+	fmt.Println(cookie.Value)
+	if cookie.Value != "" {
+		http.HandleFunc("/", homePage)
+	} else {
 
-	match, usernameDB := model.Login(email, password)
-	log.Print(match)
+		r.ParseForm()
+		email := r.Form.Get("email")
+		password := r.Form.Get("password")
 
-	expiration := time.Now().Add(365 * 24 * time.Hour)
-	cookie := http.Cookie{Name: usernameDB, Value: email, Expires: expiration}
-	http.SetCookie(w, &cookie)
+		match, usernameDB := model.Login(email, password)
+		log.Print(match)
 
-	//cookieValue, _ := r.Cookie("email")
-	//fmt.Fprint(w, cookieValue)
+		expiration := time.Now().Add(365 * 24 * time.Hour)
+		cookie := http.Cookie{Name: usernameDB, Value: email, Expires: expiration}
+		http.SetCookie(w, &cookie)
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	mapD := map[string]bool{"status": match}
-	mapB, _ := json.Marshal(mapD)
-	//jsonData := []byte(`{"status":match}`)
-	w.Write(mapB)
+		//cookieValue, _ := r.Cookie("email")
+		//fmt.Fprint(w, cookieValue)
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		mapD := map[string]bool{"status": match}
+		mapB, _ := json.Marshal(mapD)
+		//jsonData := []byte(`{"status":match}`)
+		w.Write(mapB)
+	}
 
 }
 
