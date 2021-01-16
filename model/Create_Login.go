@@ -72,15 +72,15 @@ func CreateAccount(u, p, e string) (ok bool, message string) {
 }
 
 // Used in main.go
-func Login(email, password string) (x bool) {
+func Login(email, password string) (x bool, usernameDB string) {
 	db := dbConn()
-	dbRow, err := db.Query("SELECT password FROM db.user_detail WHERE email=?", email)
+	dbRow, err := db.Query("SELECT password, username FROM db.user_detail WHERE email=?", email)
 	if err != nil {
 		panic(err.Error())
 	}
 	for dbRow.Next() {
 		var dbpass string
-		if err := dbRow.Scan(&dbpass); err != nil {
+		if err := dbRow.Scan(&dbpass, &usernameDB); err != nil {
 			log.Fatal(err)
 		}
 		log.Print("Password DB :::>", dbpass)
@@ -91,16 +91,13 @@ func Login(email, password string) (x bool) {
 		if validate != nil {
 			// PASWORDS DON'T MATCH
 			log.Println(validate)
-			x = false
-			return x
+			return false, ""
 		}
-
-		x = true
-		return x
+		return true, usernameDB
 
 	}
 
-	return x
+	return false, ""
 
 }
 

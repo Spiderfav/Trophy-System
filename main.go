@@ -56,6 +56,11 @@ func main() {
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 
+	cookie, _ := r.Cookie("email")
+	fmt.Println(cookie.Value)
+	if cookie == nil {
+		cookie := http.Cookie{Name: "", Value: "", Expires: time.time}
+	}
 	now := time.Now()              // find the time right now
 	homePageVars := pageVariables{ //store the date,time and username in a struct
 		Date: now.Format("02-01-2006"),
@@ -72,8 +77,6 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 		log.Print("template executing error: ", err) //log it
 	}
 
-	cookie, _ := r.Cookie("email")
-	fmt.Fprint(w, cookie)
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
@@ -82,15 +85,15 @@ func login(w http.ResponseWriter, r *http.Request) {
 	email := r.Form.Get("email")
 	password := r.Form.Get("password")
 
-	match := model.Login(email, password)
+	match, usernameDB := model.Login(email, password)
 	log.Print(match)
 
 	expiration := time.Now().Add(365 * 24 * time.Hour)
-	cookie := http.Cookie{Name: "email", Value: email, Expires: expiration}
+	cookie := http.Cookie{Name: usernameDB, Value: email, Expires: expiration}
 	http.SetCookie(w, &cookie)
 
-	cookieValue, _ := r.Cookie("email")
-	fmt.Fprint(w, cookieValue)
+	//cookieValue, _ := r.Cookie("email")
+	//fmt.Fprint(w, cookieValue)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
