@@ -49,8 +49,6 @@ func main() {
 	http.HandleFunc("/login", loginOrcreate)
 	http.HandleFunc("/createuser", createUser)
 	http.HandleFunc("/userlogin", login)
-
-	//http.HandleFunc("/account", homePage)  //Gonna be used later to implement the create account and login code already made
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -96,6 +94,13 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 
 func login(w http.ResponseWriter, r *http.Request) {
 
+	_, err := r.Cookie("email") //cookieValue was the 1st variable
+	if err != nil {
+		log.Print("User already logged in!")
+		http.Redirect(w, r, "/", 301)
+	}
+	//fmt.Fprint(w, cookieValue)
+
 	r.ParseForm()
 	email := r.Form.Get("email")
 	password := r.Form.Get("password")
@@ -108,11 +113,8 @@ func login(w http.ResponseWriter, r *http.Request) {
 	cookie := http.Cookie{Name: "email", Value: email, Expires: expiration}
 	http.SetCookie(w, &cookie)
 
-	//cookieValue, _ := r.Cookie("email")
-	//fmt.Fprint(w, cookieValue)
-
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	//w.WriteHeader(http.StatusOK)
 	mapD := map[string]bool{"status": match}
 	mapB, _ := json.Marshal(mapD)
 	//jsonData := []byte(`{"status":match}`)
