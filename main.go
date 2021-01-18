@@ -3,7 +3,6 @@ package main
 import (
 	model "Trophy-System/model"
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -54,12 +53,11 @@ func main() {
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 
-	cookieValue, err := r.Cookie("email")
+	_, err := r.Cookie("email")
 	if err != nil {
 		log.Print("User not logged in!")
 		//http.Redirect(w, r, "/login", 301)
 	}
-	fmt.Fprint(w, cookieValue)
 
 	now := time.Now()              // find the time right now
 	homePageVars := pageVariables{ //store the date,time and username in a struct
@@ -94,13 +92,6 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 
 func login(w http.ResponseWriter, r *http.Request) {
 
-	_, err := r.Cookie("email") //cookieValue was the 1st variable
-	if err != nil {
-		log.Print("User already logged in!")
-		http.Redirect(w, r, "/", 301)
-	}
-	//fmt.Fprint(w, cookieValue)
-
 	r.ParseForm()
 	email := r.Form.Get("email")
 	password := r.Form.Get("password")
@@ -114,7 +105,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &cookie)
 
 	w.Header().Set("Content-Type", "application/json")
-	//w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusOK)
 	mapD := map[string]bool{"status": match}
 	mapB, _ := json.Marshal(mapD)
 	//jsonData := []byte(`{"status":match}`)
@@ -146,6 +137,13 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func loginOrcreate(w http.ResponseWriter, r *http.Request) {
+
+	_, err := r.Cookie("email") //cookieValue was the 1st variable
+	if err == nil {
+		log.Print("User already logged in!")
+		http.Redirect(w, r, "/", 301)
+	}
+	//fmt.Fprint(w, cookieValue)
 
 	t, err := template.ParseFiles("view/login_create.html") //parse the html file homepage.html
 	if err != nil {                                         // if there is an error
