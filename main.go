@@ -3,7 +3,6 @@ package main
 import (
 	model "Trophy-System/model"
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -56,13 +55,6 @@ func main() {
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 
-	cookie, _ := r.Cookie("email")
-	fmt.Println(cookie.Value)
-	if cookie.Value == "" {
-		expiration := time.Now().Add(365 * 24 * time.Hour)
-		cookie := http.Cookie{Name: "", Value: "", Expires: expiration}
-		http.SetCookie(w, &cookie)
-	}
 	now := time.Now()              // find the time right now
 	homePageVars := pageVariables{ //store the date,time and username in a struct
 		Date: now.Format("02-01-2006"),
@@ -79,37 +71,42 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 		log.Print("template executing error: ", err) //log it
 	}
 
+	expiration := time.Now().Add(365 * 24 * time.Hour)
+	cookie := http.Cookie{Name: "email", Value: "", Expires: expiration}
+	http.SetCookie(w, &cookie)
+	/*
+	   cookie, _ = r.Cookie("email")
+	   	//Check if username exists
+	   	if(geusernamefromdb == cookie.Value){
+	   		//show Username webpage
+	   	}
+	*/
+	w.WriteHeader(http.StatusOK)
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
 
-	cookie, _ := r.Cookie("email")
-	fmt.Println(cookie.Value)
-	if cookie.Value != "" {
-		http.HandleFunc("/", homePage)
-	} else {
+	r.ParseForm()
+	email := r.Form.Get("email")
+	password := r.Form.Get("password")
 
-		r.ParseForm()
-		email := r.Form.Get("email")
-		password := r.Form.Get("password")
+	match, usernameDB := model.Login(email, password)
+	log.Print(match)
+	log.Print(usernameDB)
 
-		match, usernameDB := model.Login(email, password)
-		log.Print(match)
+	expiration := time.Now().Add(365 * 24 * time.Hour)
+	cookie := http.Cookie{Name: "email", Value: email, Expires: expiration}
+	http.SetCookie(w, &cookie)
 
-		expiration := time.Now().Add(365 * 24 * time.Hour)
-		cookie := http.Cookie{Name: usernameDB, Value: email, Expires: expiration}
-		http.SetCookie(w, &cookie)
+	//cookieValue, _ := r.Cookie("email")
+	//fmt.Fprint(w, cookieValue)
 
-		//cookieValue, _ := r.Cookie("email")
-		//fmt.Fprint(w, cookieValue)
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		mapD := map[string]bool{"status": match}
-		mapB, _ := json.Marshal(mapD)
-		//jsonData := []byte(`{"status":match}`)
-		w.Write(mapB)
-	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	mapD := map[string]bool{"status": match}
+	mapB, _ := json.Marshal(mapD)
+	//jsonData := []byte(`{"status":match}`)
+	w.Write(mapB)
 
 }
 
