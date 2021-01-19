@@ -48,6 +48,7 @@ func main() {
 	http.HandleFunc("/login", loginOrcreate)
 	http.HandleFunc("/createuser", createUser)
 	http.HandleFunc("/userlogin", login)
+	http.HandleFunc("/about", about)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -156,4 +157,25 @@ func loginOrcreate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Print("I am here! Login or create")
+}
+
+func about(w http.ResponseWriter, r *http.Request) {
+
+	_, err := r.Cookie("email")
+	if err != nil {
+		log.Print("User not logged in!")
+		//http.Redirect(w, r, "/login", 301)
+	}
+
+	t, err := template.ParseFiles("view/about.html") //parse the html file homepage.html
+	if err != nil {                                  // if there is an error
+		log.Print("template parsing error: ", err) // log it
+	}
+
+	err = t.Execute(w, 0) //execute the template and pass it the homePageVars struct to fill in the gaps
+	if err != nil {       // if there is an error
+		log.Print("template executing error: ", err) //log it
+
+	}
+
 }
