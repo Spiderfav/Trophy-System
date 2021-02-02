@@ -38,3 +38,9 @@
                             $("#message").html(msg);
                         }
                     });
+
+
+//client2, err := xbl.Login("Jessgood123@hotmail.co.uk", "Daddy2020?!")
+	//if err != nil {
+	//	panic(err)
+	//}
