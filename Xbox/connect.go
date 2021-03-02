@@ -7,12 +7,14 @@ import (
 )
 
 func main() {
-	client, err := xbl.Login("ruifavinha2002@gmail.com", "Infamous23")
-	if err != nil {
-		panic(err)
-	}
-	gamertag := client.Gamertag()
-	fmt.Println(gamertag)
+	/*
+		client, err := xbl.Login("ruifavinha2002@gmail.com", "Infamous23")
+		if err != nil {
+			panic(err)
+		}
+	*/
+	//gamertag := client.Gamertag()
+	//fmt.Println(gamertag)
 	client2, err := xbl.Login("Jessgood123@hotmail.co.uk", "Daddy2020?!")
 	if err != nil {
 		panic(err)

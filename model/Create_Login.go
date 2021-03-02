@@ -102,7 +102,7 @@ func Login(email, password string) (x bool, usernameDB string) {
 }
 
 func dbConn() (db *sql.DB) {
-	db, err := sql.Open("mysql", "user:password@tcp(192.168.0.133:3306)/db")
+	db, err := sql.Open("mysql", "user:password@tcp(192.168.50.218:3306)/db")
 	if err != nil {
 		panic(err.Error())
 	}
