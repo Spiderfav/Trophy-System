@@ -15,7 +15,7 @@ func main() {
 	*/
 	//gamertag := client.Gamertag()
 	//fmt.Println(gamertag)
-	client2, err := xbl.Login("Jessgood123@hotmail.co.uk", "Daddy2020?!")
+	client2, err := xbl.Login("", "")
 	if err != nil {
 		panic(err)
 	}
